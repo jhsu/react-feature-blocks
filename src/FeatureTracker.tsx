@@ -20,8 +20,11 @@ export interface IFeatureTrackerState {
 }
 
 export default class FeatureTracker extends React.Component<IFeatureTracker, IFeatureTrackerState> {
+  public static defaultProps = {
+    features: {},
+  };
   public state = {
-    enabledFeatures: this.props.features || {},
+    enabledFeatures: this.props.features,
     hasFeature: (featureName: string): boolean => {
       return !!this.state.enabledFeatures[featureName];
     },

@@ -4,32 +4,22 @@ import Feature from './Feature';
 import { IFeatureTrackerState } from './FeatureTracker';
 
 export interface IFeatureTree {
-  [key: string]: {};
+  [key: string]: any;
 }
 
-export function collectFeatures(el: React.ReactElement<any>): IFeatureTree {
+export function collectFeatures(el: React.ReactElement<any>): IFeatureTree[] {
   if (!el || !el.props) {
-    return {};
+    return [];
   };
-  let collected = {};
 
+  let childFeatures = [];
   React.Children.forEach(el.props.children, (child: React.ReactElement<any>) => {
-    if (!child.type) {
-      return;
-    }
-    if (child.type === Feature) {
-      collected = {
-        ...collected,
-        [child.props.name]: collectFeatures(child),
-      };
-    } else {
-      collected = {
-        ...collected,
-        ...collectFeatures(child),
-      };
-    }
+    childFeatures = childFeatures.concat(collectFeatures(child));
   });
-  return collected;
+  if ( el.type !== Feature ) {
+    return childFeatures;
+  }
+  return [{ [el.props.name]: childFeatures }];
 }
 
 export interface IFeatureCollectorChildArgs extends IFeatureTrackerState {
@@ -44,7 +34,10 @@ export interface IFeatureCollectorProps {
 
 export default class FeatureCollector extends React.Component<IFeatureCollectorProps> {
   public render() {
-    const featureTrees = React.Children.map(this.props.children, (child: React.ReactElement<any>) => collectFeatures(child));
+    let featureTrees = [];
+    React.Children.forEach(this.props.children, (child: React.ReactElement<any>) => {
+      featureTrees = featureTrees.concat(collectFeatures(child));
+    });
     return <FeatureConsumer>{(f: IFeatureTrackerState) => {
       return this.props.render(this.props.children, featureTrees);
     }}</FeatureConsumer>;

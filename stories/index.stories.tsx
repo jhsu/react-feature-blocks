@@ -63,16 +63,17 @@ storiesOf('FeatureTracker', module)
       <ToggleFeatures />
       <Feature name='HELLO'>
         <div>
-          <h1>hello</h1>
+          <h1>feature: HELLO</h1>
           <Feature name='GOOD_BYE'>
             <div>
-              <h1>bye</h1>
+              <h1>feature: GOOD_BYE</h1>
               <Feature name='SLEEPING'>
-                <div>sleeping</div>
+                <div>feature: SLEEPING</div>
               </Feature>
             </div>
           </Feature>
 
+        <Feature name='NOPE' />
         <FeatureFunction>
           {() => <Feature name='HELLO'><span>YESSS</span></Feature>}
         </FeatureFunction>

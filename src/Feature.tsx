@@ -49,7 +49,7 @@ export default class Feature extends React.Component<IFeatureProps, IFeatureStat
                 f.portal
               )
             : null;
-          return f.showFeatures ? [featureInfo, child] : [child];
+          return f.showFeatures ? [featureInfo, child] : child;
         }}
       </FeatureConsumer>
     );

@@ -44,7 +44,7 @@ export default class FeatureOverlay extends React.Component<IFeatureOverlayProps
     return (
       <div
         style={{
-          backgroundColor: "#efefef",
+          backgroundColor: "rgba(180, 180, 180, 0.8)",
           border: "1px dotted green",
           boxSizing: "border-box",
           color: "#888",

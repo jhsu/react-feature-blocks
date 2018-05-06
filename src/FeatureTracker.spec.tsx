@@ -33,7 +33,7 @@ describe('FeatureTracker', () => {
       <FeatureTracker features={features}>
         <FeatureConsumer>
           {(f: IFeatureTrackerState) => {
-            expect(f.enabledFeatures).toEqual(features);
+            expect(f.features).toEqual(features);
             done();
             return <div />;
           }}

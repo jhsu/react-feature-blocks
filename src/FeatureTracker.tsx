@@ -1,19 +1,27 @@
 import * as React from 'react';
 import { FeatureProvider } from './context';
 
+function isUndefined(val) {
+  return (typeof val === 'undefined');
+}
+
 export interface IFeatures {
   [key: string]: boolean,
 }
 
 export interface IFeatureTracker {
   features: IFeatures;
+  showFeatures?: boolean;
+  showUnusedFeatures?: boolean;
 }
 
 export interface IFeatureTrackerState {
-  enabledFeatures: IFeatures;
+  features: IFeatures;
+  featureTree: {};
+  portal: any;
   showFeatures: boolean;
   showUnusedFeatures: boolean;
-  portal: any;
+
   hasFeature(featureName: string): boolean;
   toggleShowFeatures(): void;
   toggleShowUnusedFeatures(): void;
@@ -21,12 +29,24 @@ export interface IFeatureTrackerState {
 
 export default class FeatureTracker extends React.Component<IFeatureTracker, IFeatureTrackerState> {
   public static defaultProps = {
-    features: {},
+    features: [],
+    showFeatures: false,
+    showUnusedFeatures: false,
   };
+
+  public static getDerivedStateFromProps(nextProps: IFeatureTracker, prevState: IFeatureTrackerState) {
+    return {
+      features: nextProps.features || prevState.features,
+      showFeatures: isUndefined(nextProps.showFeatures) ? prevState.showFeatures : nextProps.showFeatures,
+      showUnusedFeatures: isUndefined(nextProps.showUnusedFeatures) ? prevState.showUnusedFeatures : nextProps.showUnusedFeatures,
+    };
+  }
+
   public state = {
-    enabledFeatures: this.props.features,
+    features: this.props.features,
+    featureTree: {},
     hasFeature: (featureName: string): boolean => {
-      return !!this.state.enabledFeatures[featureName];
+      return !!this.state.features[featureName];
     },
     portal: null,
     showFeatures: false,
@@ -40,12 +60,6 @@ export default class FeatureTracker extends React.Component<IFeatureTracker, IFe
       }));
     },
   };
-
-  public componentWillReceiveProps(nextProps) {
-    if (nextProps.features !== this.props.features) {
-      this.setState({ enabledFeatures: nextProps.features });
-    }
-  }
 
   public setupPortal = el => {
     this.setState({ portal: el });
